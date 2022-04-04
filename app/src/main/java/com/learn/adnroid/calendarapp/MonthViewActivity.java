@@ -1,14 +1,13 @@
 package com.learn.adnroid.calendarapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,10 +42,20 @@ public class MonthViewActivity extends AppCompatActivity {
         ImageView prev = findViewById(R.id.prev);
         ImageView next = findViewById(R.id.next);
 
-        RecyclerView calendarView = findViewById(R.id.calendar);
-        calendarView.setLayoutManager(new GridLayoutManager(this, 7));
+        prev.setOnClickListener(view -> {
+            clickPrev();
+        });
+
+        next.setOnClickListener(view -> {
+            clickNext();
+        });
+
+        GridView calendarView = findViewById(R.id.calendar);
 
         this.adapter = new CalendarAdapter();
+        this.adapter.setOnItemClickListener(item -> {
+            Toast.makeText(this, year + "." + (month + 1) + "." + item, Toast.LENGTH_SHORT).show();
+        });
         calendarView.setAdapter(this.adapter);
     }
 
@@ -63,5 +72,26 @@ public class MonthViewActivity extends AppCompatActivity {
         }
 
         this.adapter.setItems(list);
+    }
+
+    private void clickPrev() {
+        this.calendar.set(this.year, this.month - 1, 1);
+        callCalendar();
+        overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
+        finish();
+    }
+
+    private void clickNext() {
+        this.calendar.set(this.year, this.month + 1, 1);
+        callCalendar();
+        overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left);
+        finish();
+    }
+
+    private void callCalendar() {
+        Intent intent = new Intent(this, MonthViewActivity.class);
+        intent.putExtra("CALENDAR_YEAR", this.calendar.get(Calendar.YEAR));
+        intent.putExtra("CALENDAR_MONTH", this.calendar.get(Calendar.MONTH));
+        startActivity(intent);
     }
 }
