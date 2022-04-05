@@ -25,13 +25,7 @@
         android:theme="@style/Theme.CalendarApp"
         tools:targetApi="31">
         <activity
-            android:name=".DayActivity"
-            android:exported="false" />
-        <activity
-            android:name=".WeekActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MonthActivity"
+            android:name=".MonthViewActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
