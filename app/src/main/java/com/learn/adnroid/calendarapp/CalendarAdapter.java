@@ -1,10 +1,13 @@
 package com.learn.adnroid.calendarapp;
 
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -14,6 +17,7 @@ public class CalendarAdapter extends BaseAdapter {
     private ArrayList<String> items = new ArrayList<>();
     // 이벤트리스터 참조변수 선언
     private OnItemClickListener onItemClickListener = null;
+    private int height = 0;
 
     @Override
     public int getCount() {
@@ -44,7 +48,7 @@ public class CalendarAdapter extends BaseAdapter {
         TextView day = view.findViewById(R.id.day);
         String item = items.get(i);
         int color = R.color.black;
-        ;
+
         switch ((i + 1) % 7) {
             case 0:
                 color = R.color.blue_700;
@@ -56,6 +60,10 @@ public class CalendarAdapter extends BaseAdapter {
         // 정보(텍스트 및 컬러)를 수정한 뒤, 이벤트리스너를 넣은 뒤 반환한다.
         day.setText(item);
         day.setTextColor(view.getResources().getColor(color));
+
+        if (this.height != 0)
+            view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, this.height));
+
         if (item.isEmpty())
             day.setOnClickListener(view1 -> {});
         else if (onItemClickListener != null)
@@ -65,6 +73,11 @@ public class CalendarAdapter extends BaseAdapter {
 
     public void setItems(ArrayList<String> items) {
         this.items = items;
+        notifyDataSetChanged();
+    }
+
+    public void setItemHeight(int height) {
+        this.height = height;
         notifyDataSetChanged();
     }
 

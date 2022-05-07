@@ -2,6 +2,8 @@ package com.learn.adnroid.calendarapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.ViewTreeObserver;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,26 +41,22 @@ public class MonthViewActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        TextView currentMonth = findViewById(R.id.month);
-        //해당 컴포넌트의 출력 텍스트를 수정한다.
-        currentMonth.setText(this.year + "년 " + (this.month + 1) + "월");
-
-        ImageView prev = findViewById(R.id.prev);
-        ImageView next = findViewById(R.id.next);
-        //이전 버튼 클릭 시에 현재 표시된 달력의 연/월 에서
-        //이전 월에 해당하는 연/월 정보를 파라미터로 전달하여 MonthViewActivity 를 새로이 시작시킨다.
-        //이때, 현재화면에 표시된 액티비티는 종료시킨다.
-        prev.setOnClickListener(view -> clickPrev());
-        //다음 버튼 클릭 시에 현재 표시된 달력의 연/월 에서
-        //이후 월에 해당하는 연/월 정보를 파라미터로 전달하여 MonthViewActivity 를 새로이 시작시킨다.
-        //이때, 현재화면에 표시된 액티비티는 종료시킨다.
-        next.setOnClickListener(view -> clickNext());
+        setTitle(this.year + "년 " + (this.month + 1) + "월");
 
         GridView calendarView = findViewById(R.id.calendar);
         this.adapter = new CalendarAdapter();
+        calendarView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                adapter.setItemHeight(calendarView.getHeight() / 6);
+                calendarView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+
         //특정한 날짜를 선택 시에, 해당 날짜의 연/월/일을 표시하는 Toast 메시지를 출력한다.
         this.adapter.setOnItemClickListener(item -> Toast.makeText(this, year + "." + (month + 1) + "." + item, Toast.LENGTH_SHORT).show());
         calendarView.setAdapter(this.adapter);
+
     }
 
     private void drawCalendar() {
@@ -74,30 +72,9 @@ public class MonthViewActivity extends AppCompatActivity {
         for (int i = 1; i <= maxDay; i++) {
             list.add(i + "");
         }
+        for (int i = startDayOfWeek + maxDay; i <= 6 * 7; i++) {
+            list.add("");
+        }
         this.adapter.setItems(list);
-    }
-
-    //overridePendingTransition(R.anim.none, R.anim.horizon_exit)으로 화면전환 간 애니매이션 효과를 부여한다. -1달
-    private void clickPrev() {
-        this.calendar.set(this.year, this.month - 1, 1);
-        callCalendar();
-        overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
-        finish();
-    }
-
-    //overridePendingTransition(R.anim.none, R.anim.horizon_exit)으로 화면전환 간 애니매이션 효과를 부여한다. +1달
-    private void clickNext() {
-        this.calendar.set(this.year, this.month + 1, 1);
-        callCalendar();
-        overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left);
-        finish();
-    }
-
-    //MAP(N:V) : Extras를 활용하여 이름과 값의 쌍으로된 정보를 전달
-    private void callCalendar() {
-        Intent intent = new Intent(this, MonthViewActivity.class);
-        intent.putExtra("CALENDAR_YEAR", this.calendar.get(Calendar.YEAR));
-        intent.putExtra("CALENDAR_MONTH", this.calendar.get(Calendar.MONTH));
-        startActivity(intent);
     }
 }
