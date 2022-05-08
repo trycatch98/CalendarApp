@@ -1,5 +1,7 @@
 package com.learn.adnroid.calendarapp;
 
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -22,7 +24,12 @@ public class PagerAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         this.calendar.set(year, month + position - MID_POSITION, 1);
-        return new MonthViewFragment(year, this.calendar.get(Calendar.MONTH));
+        MonthViewFragment fragment = new MonthViewFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("YEAR", this.calendar.get(Calendar.YEAR));
+        bundle.putInt("MONTH", this.calendar.get(Calendar.MONTH));
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     public int getCurrentYear(int position) {
