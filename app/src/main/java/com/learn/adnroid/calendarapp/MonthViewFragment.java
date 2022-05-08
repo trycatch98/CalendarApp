@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,21 +18,22 @@ import java.util.Calendar;
 public class MonthViewFragment extends Fragment {
     private CalendarAdapter adapter;
     private Calendar calendar;
-    private int maxDay = -1, startDayOfWeek = -1;
-
-    public MonthViewFragment(int year, int month) {
-        this.calendar = Calendar.getInstance();
-
-        this.calendar.set(year, month, 1);
-        this.maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        this.startDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-    }
+    private int year = -1, month = -1, maxDay = -1, startDayOfWeek = -1, viewHeight = -1, lastPosition = -1;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_month, container, false);
         this.calendar = Calendar.getInstance();
+        Bundle args = getArguments();
+        if (args != null) {
+            this.year = args.getInt("YEAR");
+            this.month = args.getInt("MONTH");
+            this.viewHeight = args.getInt("VIEW_HEIGHT");
+        }
+        this.calendar.set(this.year, this.month, 1);
+        this.maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        this.startDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         initView(view);
         drawCalendar();
         return view;
@@ -40,16 +42,11 @@ public class MonthViewFragment extends Fragment {
     private void initView(View view) {
         GridView calendarView = view.findViewById(R.id.calendar);
         this.adapter = new CalendarAdapter();
-        calendarView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                adapter.setItemHeight(calendarView.getHeight() / 6);
-                calendarView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            }
-        });
+
+        adapter.setItemHeight(viewHeight / 6);
 
         //특정한 날짜를 선택 시에, 해당 날짜의 연/월/일을 표시하는 Toast 메시지를 출력한다.
-//        this.adapter.setOnItemClickListener(item -> Toast.makeText(this, year + "." + (month + 1) + "." + item, Toast.LENGTH_SHORT).show());
+        this.adapter.setOnItemClickListener(item -> Toast.makeText(getActivity(), year + "." + (month + 1) + "." + item, Toast.LENGTH_SHORT).show());
         calendarView.setAdapter(this.adapter);
 
     }

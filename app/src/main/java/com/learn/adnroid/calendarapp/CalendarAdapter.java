@@ -1,6 +1,7 @@
 package com.learn.adnroid.calendarapp;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ public class CalendarAdapter extends BaseAdapter {
     // 이벤트리스터 참조변수 선언
     private OnItemClickListener onItemClickListener = null;
     private int height = 0;
+    private int selectPosition = -1;
 
     @Override
     public int getCount() {
@@ -60,14 +62,22 @@ public class CalendarAdapter extends BaseAdapter {
         // 정보(텍스트 및 컬러)를 수정한 뒤, 이벤트리스너를 넣은 뒤 반환한다.
         day.setText(item);
         day.setTextColor(view.getResources().getColor(color));
-
+        if (i == selectPosition)
+            day.setBackgroundColor(Color.CYAN);
+        else
+            day.setBackgroundColor(Color.WHITE);
         if (this.height != 0)
             view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, this.height));
 
         if (item.isEmpty())
             day.setOnClickListener(view1 -> {});
         else if (onItemClickListener != null)
-            view.setOnClickListener(view1 -> onItemClickListener.onItemClick(item));
+            view.setOnClickListener(view1 -> {
+                onItemClickListener.onItemClick(item);
+                selectPosition = i;
+                notifyDataSetChanged();
+            });
+
         return view;
     }
 

@@ -13,11 +13,16 @@ public class PagerAdapter extends FragmentStateAdapter {
     private int year = -1, month = -1;
     private final Calendar calendar = Calendar.getInstance();
     public final int MID_POSITION = Integer.MAX_VALUE / 2;
+    private int viewHeight = -1;
 
     public PagerAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
         this.year = calendar.get(Calendar.YEAR);
         this.month = calendar.get(Calendar.MONTH);
+    }
+
+    public void setViewHeight(int viewHeight) {
+        this.viewHeight = viewHeight;
     }
 
     @NonNull
@@ -28,6 +33,7 @@ public class PagerAdapter extends FragmentStateAdapter {
         Bundle bundle = new Bundle();
         bundle.putInt("YEAR", this.calendar.get(Calendar.YEAR));
         bundle.putInt("MONTH", this.calendar.get(Calendar.MONTH));
+        bundle.putInt("VIEW_HEIGHT", viewHeight);
         fragment.setArguments(bundle);
         return fragment;
     }

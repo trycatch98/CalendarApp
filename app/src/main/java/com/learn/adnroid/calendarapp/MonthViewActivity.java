@@ -24,7 +24,6 @@ public class MonthViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_month);
         ViewPager2 pager = findViewById(R.id.pager);
         PagerAdapter adapter = new PagerAdapter(this);
-        pager.setAdapter(adapter);
         pager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -35,7 +34,15 @@ public class MonthViewActivity extends AppCompatActivity {
             }
         });
 
-        pager.setCurrentItem(adapter.MID_POSITION, false);
+        pager.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                pager.setAdapter(adapter);
+                adapter.setViewHeight(pager.getHeight());
+                pager.setCurrentItem(adapter.MID_POSITION, false);
+                pager.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
     }
 
 
