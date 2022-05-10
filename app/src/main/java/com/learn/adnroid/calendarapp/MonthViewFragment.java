@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.GridView;
 import android.widget.Toast;
 
@@ -16,22 +15,23 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MonthViewFragment extends Fragment {
-    private CalendarAdapter adapter;
-    private Calendar calendar;
-    private int year = -1, month = -1, maxDay = -1, startDayOfWeek = -1, viewHeight = -1, lastPosition = -1;
+    private MonthCalendarAdapter adapter;
+    private int year = -1, month = -1, maxDay = -1, startDayOfWeek = -1;
+    private int viewHeight = -1;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_month, container, false);
-        this.calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         Bundle args = getArguments();
         if (args != null) {
             this.year = args.getInt("YEAR");
             this.month = args.getInt("MONTH");
             this.viewHeight = args.getInt("VIEW_HEIGHT");
         }
-        this.calendar.set(this.year, this.month, 1);
+
+        calendar.set(this.year, this.month, 1);
         this.maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         this.startDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         initView(view);
@@ -41,7 +41,7 @@ public class MonthViewFragment extends Fragment {
 
     private void initView(View view) {
         GridView calendarView = view.findViewById(R.id.calendar);
-        this.adapter = new CalendarAdapter();
+        this.adapter = new MonthCalendarAdapter();
 
         adapter.setItemHeight(viewHeight / 6);
 
