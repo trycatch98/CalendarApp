@@ -18,6 +18,7 @@ public class WeekCalendarAdapter extends BaseAdapter {
     private OnItemClickListener onItemClickListener = null;
     private int height = 0;
     private int selectPosition = -1;
+    private ArrayList<Detail> details = new ArrayList<>();
 
     @Override
     public int getCount() {
@@ -43,7 +44,7 @@ public class WeekCalendarAdapter extends BaseAdapter {
             //해당 객체를 LAYOUT_INFLATER_SERVICE라는 시스템 호출 함수를 호출하여 사용할 수 있도록 요청한다.
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             //item_day View 컴포넌트, 부분 레이아웃파일을 인플레이션(Inflation)하여 뷰그룹으로부터 메인레이아웃의 파일 내용으로 적용할 수 있도록 도와준다.
-            view = inflater.inflate(R.layout.item_day, viewGroup, false);
+            view = inflater.inflate(R.layout.item_week, viewGroup, false);
             holder = new ViewHolder();
             holder.day = view.findViewById(R.id.day);
             if (this.height != 0)
@@ -66,9 +67,16 @@ public class WeekCalendarAdapter extends BaseAdapter {
         else
             holder.day.setBackgroundColor(Color.WHITE);
 
+        for (Detail d : details) {
+            if (i == d.position) {
+                holder.day.setText(d.title);
+                holder.detail = d;
+            }
+        }
+
         if (onItemClickListener != null)
             holder.day.setOnClickListener(view1 -> {
-                onItemClickListener.onItemClick(i);
+                onItemClickListener.onItemClick(i, holder.detail);
                 selectPosition = i;
                 notifyDataSetChanged();
             });
@@ -90,12 +98,23 @@ public class WeekCalendarAdapter extends BaseAdapter {
         this.onItemClickListener = onItemClickListener;
     }
 
+    public void setDetail(ArrayList<Detail> details) {
+        this.details = details;
+        notifyDataSetChanged();
+    }
+
+    public void setSelectPosition(int selectPosition) {
+        this.selectPosition = selectPosition;
+        notifyDataSetChanged();
+    }
+
     // onItemClick(String item) 추상화 및 인터페이스
     interface OnItemClickListener {
-        void onItemClick(int position);
+        void onItemClick(int position, Detail detail);
     }
 
     class ViewHolder {
         TextView day;
+        Detail detail = null;
     }
 }

@@ -38,7 +38,7 @@
             android:orientation="horizontal"
             android:nestedScrollingEnabled="true">
 
-            <com.learn.adnroid.calendarapp.FixedGridView
+            <GridView
                 android:id="@+id/time"
                 android:layout_width="20dp"
                 android:layout_height="match_parent"
@@ -50,7 +50,7 @@
                 android:layout_height="match_parent"
                 android:background="@color/black"/>
 
-            <com.learn.adnroid.calendarapp.FixedGridView
+            <GridView
                 android:id="@+id/calendar"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -64,5 +64,13 @@
 
     </androidx.core.widget.NestedScrollView>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:src="@drawable/ic_baseline_add_24"
+        android:layout_margin="16dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

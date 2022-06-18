@@ -58,6 +58,7 @@ public class PagerAdapter extends FragmentStateAdapter {
         bundle.putInt("YEAR", this.calendar.get(Calendar.YEAR));
         bundle.putInt("MONTH", this.calendar.get(Calendar.MONTH));
         bundle.putInt("DAY", this.calendar.get(Calendar.DATE));
+        bundle.putString("NOW", year + " " + month + " " + day);
 
         bundle.putInt("VIEW_HEIGHT", viewHeight);
         bundle.putInt("VIEW_WIDTH", viewWidth);
@@ -88,6 +89,10 @@ public class PagerAdapter extends FragmentStateAdapter {
                 break;
         }
         return this.calendar.get(Calendar.MONTH);
+    }
+
+    public int getCurrentDay() {
+        return this.calendar.get(Calendar.DATE);
     }
 
     @Override

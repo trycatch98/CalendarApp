@@ -22,6 +22,7 @@ public class CalendarViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_month);
+
         pager = findViewById(R.id.pager);
         dayOfWeek = findViewById(R.id.day_of_week);
         monthAdapter = new PagerAdapter(this);
